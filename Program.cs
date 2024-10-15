@@ -4,8 +4,8 @@
     {
         static void Main(string[] args)
         {
-            PNG.Encoder.Put("cake.png", "output.png", "Hello World");
-            Console.WriteLine(PNG.Decoder.Get("output.png"));
+            PNG.Encoder.Put("images/cake.png", "images/output.png", "Hello World");
+            Console.WriteLine(PNG.Decoder.Get("images/output.png"));
         }
     };
 };
