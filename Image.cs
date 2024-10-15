@@ -4,38 +4,60 @@ namespace Cryptography
 {
     public class Image
     {
-        public int width;
-        public int height;
-        public int depth;        
-        public int colour_type;            
-        public int compression_method;
-        public int filter_method;
-        public int interlace_method;
+        public int Width;
+        public int Height;
+        public int Depth;        
+        public int ColourType;            
+        public int CompressionMethod;
+        public int FilterMethod;
+        public int InterlaceMethod;
 
-        public List<Chunk> chunks = new List<Chunk>();
+        public List<Chunk> Chunks = new List<Chunk>();
+
+        public Image()
+        {
+            Clear();
+        }
+
+        public Image(ref byte[] data)
+        {
+            Clear();
+            Get(ref data);
+        }
+
+        public void Clear()
+        {
+            Width = 0; 
+            Height = 0; 
+            Depth = 0;
+            ColourType = 0;
+            CompressionMethod = 0;
+            FilterMethod = 0;
+            InterlaceMethod = 0;
+            Chunks.Clear();
+        }
 
         public Chunk? Last(string type)
         {
-            for(int i = chunks.Count - 1; i >= 0; i--)
+            for(int i = Chunks.Count - 1; i >= 0; i--)
             {
-                Chunk c = chunks[i];
-                if(c.type == type) return c;
+                Chunk chunk = Chunks[i];
+                if(chunk.Type == type) return chunk;
             }
 
             return null;
         }      
 
-        public static Image GetImageSpecs(ref byte[] data)
+        public void Get(ref byte[] data)
         {
-            Image result = new Image();
             int offset = 8;
 
             do
             {
                 Chunk chunk = new Chunk();
 
-                chunk.offset = offset;
-                chunk.length = (((int)data[offset]) << 24) | (((int)data[offset + 1]) << 16) |(((int)data[offset + 2]) << 8) | (int)data[offset + 3];
+                chunk.Offset = offset;
+                chunk.Length = (((int)data[offset]) << 24) | (((int)data[offset + 1]) << 16) |(((int)data[offset + 2]) << 8) | (int)data[offset + 3];
                 offset += 4;
 
                 byte[] type = new byte[4];
@@ -44,31 +66,29 @@ namespace Cryptography
                 type[2] = data[offset + 2];
                 type[3] = data[offset + 3];
 
-                chunk.type = Encoding.ASCII.GetString(type);
+                chunk.Type = Encoding.ASCII.GetString(type);
                 
                 offset += 4;
 
-                if(chunk.type == "IHDR")
+                if(chunk.Type == "IHDR")
                 {
-                    result.width = (((int)data[offset]) << 24) | (((int)data[offset + 1]) << 16) |(((int)data[offset + 2]) << 8) | (int)data[offset + 3];
-                    result.height = (((int)data[offset + 4]) << 24) | (((int)data[offset + 5]) << 16) |(((int)data[offset + 6]) << 8) | (int)data[offset + 7];
-                    result.depth = (int)data[offset + 8];
-                    result.colour_type = (int)data[offset + 9];
-                    result.compression_method = (int)data[offset + 10];
-                    result.filter_method = (int)data[offset + 11];
-                    result.interlace_method = (int)data[offset + 12];
+                    Width = (((int)data[offset]) << 24) | (((int)data[offset + 1]) << 16) |(((int)data[offset + 2]) << 8) | (int)data[offset + 3];
+                    Height = (((int)data[offset + 4]) << 24) | (((int)data[offset + 5]) << 16) |(((int)data[offset + 6]) << 8) | (int)data[offset + 7];
+                    Depth = (int)data[offset + 8];
+                    ColourType = (int)data[offset + 9];
+                    CompressionMethod = (int)data[offset + 10];
+                    FilterMethod = (int)data[offset + 11];
+                    InterlaceMethod = (int)data[offset + 12];
                 }
 
-                offset += chunk.length;
+                offset += chunk.Length;
 
-                chunk.crc32 = (((uint)data[offset]) << 24) | (((uint)data[offset + 1]) << 16) |(((uint)data[offset + 2]) << 8) | (uint)data[offset + 3];
+                chunk.Crc32 = (((uint)data[offset]) << 24) | (((uint)data[offset + 1]) << 16) |(((uint)data[offset + 2]) << 8) | (uint)data[offset + 3];
                 offset += 4;
 
-                result.chunks.Add(chunk);
+                Chunks.Add(chunk);
 
-            }while(offset < data.Length);
-        
-            return result;
+            } while(offset < data.Length);
         }  
     };
 };

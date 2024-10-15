@@ -2,9 +2,9 @@ namespace Cryptography
 {
     public class Chunk
     {
-        public int length = 0;
-        public int offset = 0;
-        public string type = "";
-        public uint crc32 = 0;     
+        public int Length = 0;
+        public int Offset = 0;
+        public string Type = "";
+        public uint Crc32 = 0;     
     };
 };

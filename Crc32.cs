@@ -2,7 +2,7 @@ namespace Cryptography
 {
     public class Crc32
     {
-        private ulong[] crc_table = new ulong[256];
+        private ulong[] CrcTable = new ulong[256];
 
         private void Initalise()
         {
@@ -20,7 +20,7 @@ namespace Cryptography
                         c = c >> 1;
                 }
 
-                crc_table[n] = c;
+                CrcTable[n] = c;
             }
         }
 
@@ -31,7 +31,7 @@ namespace Cryptography
         
             for (n = 0; n < len; n++) 
             {
-                c = crc_table[(c ^ buf[n + start]) & 0xff] ^ (c >> 8);
+                c = CrcTable[(c ^ buf[n + start]) & 0xff] ^ (c >> 8);
             }
 
             return c;
